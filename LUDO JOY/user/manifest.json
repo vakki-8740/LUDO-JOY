@@ -1,0 +1,16 @@
+{
+  "name": "Ludo Joy - Play & Win",
+  "short_name": "Ludo Joy",
+  "description": "Play Ludo games and win real money prizes",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f2f2f7",
+  "theme_color": "#007aff",
+  "orientation": "portrait",
+  "scope": "/",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }
+  ]
+}
