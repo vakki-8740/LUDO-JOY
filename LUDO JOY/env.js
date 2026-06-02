@@ -1,5 +1,4 @@
 window.FIREBASE_CONFIG = {
-  const firebaseConfig = {
   apiKey: "AIzaSyDC1GpZu6VF0t4eFFpezOUXDYF7HZb1gaM",
   authDomain: "ludo-ebb4e.firebaseapp.com",
   databaseURL: "https://ludo-ebb4e-default-rtdb.asia-southeast1.firebasedatabase.app",
