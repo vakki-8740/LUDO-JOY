@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ludo Joy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Toast -->
+    <div id="toast">Message</div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay"><div class="loader"></div></div>
+
+    <!-- ==================== LOGIN PAGE ==================== -->
+    <div id="login-page" class="page">
+        <div class="login-container">
+            <div class="login-logo">
+                <i class="fas fa-dice" style="font-size:60px;color:#ff3b30;"></i>
+                <h1>Ludo Joy</h1>
+                <p>Play & Win Real Money</p>
+            </div>
+            <div class="login-btn-group">
+                <button class="login-btn google-btn" onclick="loginWithGoogle()">
+                    <i class="fab fa-google"></i> Sign in with Google
+                </button>
+                <div class="login-divider"><span>OR</span></div>
+                <button class="login-btn demo-btn" onclick="showDemoLogin()">
+                    <i class="fas fa-dice"></i> Demo Login
+                </button>
+            </div>
+            <div id="demo-fields" class="demo-fields" style="display:none;">
+                <input type="text" id="demo-name" placeholder="Enter your name" class="demo-input">
+                <button class="login-btn demo-btn" onclick="loginDemo()" style="margin-top:8px;">
+                    <i class="fas fa-play"></i> Play as Guest
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== HOME PAGE ==================== -->
+    <div id="home-page" class="page" style="display:none;">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <i class="fas fa-bars menu-hamburger" onclick="toggleMenu()"></i>
+                <i class="fas fa-dice" style="color:#ff3b30;font-size:24px;"></i>
+                <span class="header-title">Ludo Joy</span>
+            </div>
+            <div class="header-right">
+                <div class="bal-badge" onclick="navigateTo('wallet-section')">
+                    <i class="fas fa-wallet"></i> ₹<span id="header-balance">0</span>
+                </div>
+                <i class="fas fa-bell" onclick="navigateTo('mail-section')" style="font-size:20px;color:var(--primary);cursor:pointer;"></i>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+
+            <!-- HOME SECTION -->
+            <div id="home-section" class="section active">
+                <div class="section-title">Choose Your Game</div>
+                <div class="games-grid" id="games-grid">
+                    <div class="game-card" onclick="navigateTo('lobby-section')">
+                        <div class="game-icon" style="background:linear-gradient(135deg,#ff3b30,#ff9500);">
+                            <i class="fas fa-dice" style="font-size:40px;color:#fff;"></i>
+                        </div>
+                        <div class="game-name">Classic Ludo</div>
+                        <div class="game-desc">Play 1v1 & Win</div>
+                    </div>
+                    <div class="game-card" onclick="navigateTo('lobby-section')">
+                        <div class="game-icon" style="background:linear-gradient(135deg,#007aff,#5856d6);">
+                            <i class="fas fa-fire" style="font-size:40px;color:#fff;"></i>
+                        </div>
+                        <div class="game-name">Popular Ludo</div>
+                        <div class="game-desc">Fast Matches</div>
+                    </div>
+                </div>
+
+                <div class="section-title" style="margin-top:20px;">Quick Actions</div>
+                <div class="quick-actions">
+                    <div class="qa-card" onclick="navigateTo('wallet-section')">
+                        <i class="fas fa-plus-circle" style="color:var(--success);font-size:28px;"></i>
+                        <span>Deposit</span>
+                    </div>
+                    <div class="qa-card" onclick="navigateTo('wallet-section')">
+                        <i class="fas fa-arrow-up" style="color:var(--danger);font-size:28px;"></i>
+                        <span>Withdraw</span>
+                    </div>
+                    <div class="qa-card" onclick="navigateTo('profile-section')">
+                        <i class="fas fa-user" style="color:var(--primary);font-size:28px;"></i>
+                        <span>Profile</span>
+                    </div>
+                    <div class="qa-card" onclick="navigateTo('referral-section')">
+                        <i class="fas fa-share-alt" style="color:#ff9500;font-size:28px;"></i>
+                        <span>Referral</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LOBBY SECTION -->
+            <div id="lobby-section" class="section">
+                <div class="top-bar">
+                    <i class="fas fa-arrow-left" onclick="navigateTo('home-section')" style="font-size:20px;cursor:pointer;"></i>
+                    <span>Game Lobby</span>
+                    <button class="create-btn-sm" onclick="showCreateBet()"><i class="fas fa-plus"></i> Create Bet</button>
+                </div>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-bets" placeholder="Search bets..." onkeyup="filterBets()">
+                </div>
+                <div id="bets-container"></div>
+            </div>
+
+            <!-- WALLET SECTION -->
+            <div id="wallet-section" class="section">
+                <div class="top-bar">
+                    <i class="fas fa-arrow-left" onclick="navigateTo('home-section')" style="font-size:20px;cursor:pointer;"></i>
+                    <span>Wallet</span>
+                    <span></span>
+                </div>
+
+                <!-- Balance Card -->
+                <div class="w-balance-card">
+                    <div class="w-balance-bg"></div>
+                    <div class="w-balance-content">
+                        <div class="w-balance-label">Total Balance</div>
+                        <div class="w-balance-amount">₹<span id="wallet-balance">0</span></div>
+                        <div class="w-balance-actions">
+                            <div class="w-balance-action" onclick="switchWalletTab('deposit')">
+                                <div class="w-ba-icon" style="background:rgba(255,255,255,0.2);"><i class="fas fa-plus"></i></div>
+                                <span>Add</span>
+                            </div>
+                            <div class="w-balance-action" onclick="switchWalletTab('withdraw')">
+                                <div class="w-ba-icon" style="background:rgba(255,255,255,0.2);"><i class="fas fa-arrow-up"></i></div>
+                                <span>Send</span>
+                            </div>
+                            <div class="w-balance-action" onclick="switchWalletTab('history')">
+                                <div class="w-ba-icon" style="background:rgba(255,255,255,0.2);"><i class="fas fa-clock"></i></div>
+                                <span>History</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="w-stats">
+                    <div class="w-stat">
+                        <div class="w-stat-label">Total Deposit</div>
+                        <div class="w-stat-value" style="color:var(--success);">₹<span id="w-total-deposit">0</span></div>
+                    </div>
+                    <div class="w-stat">
+                        <div class="w-stat-label">Total Withdraw</div>
+                        <div class="w-stat-value" style="color:var(--danger);">₹<span id="w-total-withdraw">0</span></div>
+                    </div>
+                    <div class="w-stat">
+                        <div class="w-stat-label">Total Win</div>
+                        <div class="w-stat-value" style="color:#ff9500;">₹<span id="w-total-win">0</span></div>
+                    </div>
+                </div>
+
+                <!-- Deposit Panel -->
+                <div id="deposit-section" class="w-panel">
+                    <div class="w-panel-title">💰 Add Money</div>
+                    <div class="w-amount-grid" id="deposit-opts"></div>
+                    <div class="w-custom-amount">
+                        <input type="number" id="custom-deposit" placeholder="Enter custom amount">
+                        <span class="w-currency">₹</span>
+                    </div>
+                    <button class="w-primary-btn" onclick="depositMoney()"><i class="fas fa-lock"></i> Deposit via Razorpay</button>
+                </div>
+
+                <!-- Withdraw Panel -->
+                <div id="withdraw-section" class="w-panel" style="display:none;">
+                    <div id="kyf-section">
+                        <div class="w-panel-title">🪪 KYC Verification</div>
+                        <p class="w-hint">Upload Aadhar card to start withdrawing</p>
+                        <div class="w-input-group"><i class="fas fa-user"></i><input type="text" id="kyf-name" placeholder="Full Name as on Aadhar"></div>
+                        <div class="w-input-group"><i class="fas fa-id-card"></i><input type="text" id="kyf-aadhar" placeholder="Aadhar Number"></div>
+                        <div class="w-input-group"><i class="fas fa-image"></i><input type="text" id="kyf-front" placeholder="Aadhar Front Image URL"></div>
+                        <div class="w-input-group"><i class="fas fa-image"></i><input type="text" id="kyf-back" placeholder="Aadhar Back Image URL"></div>
+                        <button class="w-primary-btn" onclick="submitKYF()">Submit for KYC</button>
+                    </div>
+                    <div id="withdraw-form" style="display:none;">
+                        <div class="w-panel-title">💸 Withdraw Funds</div>
+                        <div class="w-input-group"><i class="fas fa-rupee-sign"></i><input type="number" id="withdraw-amount" placeholder="Amount (min ₹100)"></div>
+                        <div class="w-input-group"><i class="fas fa-credit-card"></i>
+                            <select id="withdraw-method" onchange="toggleWithdrawFields()">
+                                <option value="bank">🏦 Bank Account</option>
+                                <option value="upi">📱 UPI ID</option>
+                            </select>
+                        </div>
+                        <div id="bank-fields">
+                            <div class="w-input-group"><i class="fas fa-user"></i><input type="text" id="w-holder" placeholder="Account Holder Name"></div>
+                            <div class="w-input-group"><i class="fas fa-code"></i><input type="text" id="w-ifsc" placeholder="IFSC Code"></div>
+                            <div class="w-input-group"><i class="fas fa-credit-card"></i><input type="text" id="w-account" placeholder="Account Number"></div>
+                            <div class="w-input-group"><i class="fas fa-check-circle"></i><input type="text" id="w-confirm-account" placeholder="Confirm Account Number"></div>
+                        </div>
+                        <div id="upi-fields" style="display:none;">
+                            <div class="w-input-group"><i class="fas fa-mobile-alt"></i><input type="text" id="w-upi" placeholder="UPI ID (e.g. name@upi)"></div>
+                        </div>
+                        <button class="w-primary-btn" onclick="withdrawMoney()"><i class="fas fa-paper-plane"></i> Withdraw</button>
+                    </div>
+                </div>
+
+                <!-- History Panel -->
+                <div id="history-section" class="w-panel" style="display:none;">
+                    <div class="w-panel-title">📋 Transaction History</div>
+                    <div class="w-history-tabs">
+                        <span class="w-ht active" onclick="filterHistory('all', this)">All</span>
+                        <span class="w-ht" onclick="filterHistory('Deposit', this)">Deposit</span>
+                        <span class="w-ht" onclick="filterHistory('Withdraw', this)">Withdraw</span>
+                    </div>
+                    <div id="history-list"></div>
+                </div>
+            </div>
+
+            <!-- PROFILE SECTION -->
+            <div id="profile-section" class="section">
+                <div class="top-bar">
+                    <i class="fas fa-arrow-left" onclick="navigateTo('home-section')" style="font-size:20px;cursor:pointer;"></i>
+                    <span>Profile</span>
+                    <span></span>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-avatar" id="profile-avatar">?</div>
+                    <div class="profile-name" id="profile-name">User</div>
+                    <div class="profile-id" id="profile-id">ID: ---</div>
+                </div>
+                <div class="profile-stats">
+                    <div class="ps-item"><span class="ps-label">Total Deposit</span><span class="ps-value" id="p-total-deposit">₹0</span></div>
+                    <div class="ps-item"><span class="ps-label">Total Withdraw</span><span class="ps-value" id="p-total-withdraw">₹0</span></div>
+                    <div class="ps-item"><span class="ps-label">Total Win</span><span class="ps-value" id="p-total-win">₹0</span></div>
+                </div>
+                <div class="profile-actions">
+                    <div class="pa-item" onclick="editProfileName()"><i class="fas fa-edit"></i> Edit Name</div>
+                    <div class="pa-item" onclick="logoutUser()"><i class="fas fa-sign-out-alt" style="color:var(--danger);"></i> Logout</div>
+                </div>
+            </div>
+
+            <!-- REFERRAL SECTION -->
+            <div id="referral-section" class="section">
+                <div class="top-bar">
+                    <i class="fas fa-arrow-left" onclick="navigateTo('home-section')" style="font-size:20px;cursor:pointer;"></i>
+                    <span>Referral</span>
+                    <span></span>
+                </div>
+                <div class="referral-card">
+                    <div class="rc-title">Refer & Earn 2% Commission</div>
+                    <div class="rc-code" id="ref-code">------</div>
+                    <button class="btn" onclick="copyReferral()"><i class="fas fa-copy"></i> Copy Referral Link</button>
+                    <div class="rc-share">
+                        <button class="btn" style="background:#25D366;" onclick="shareWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                        <button class="btn" style="background:#0088cc;" onclick="shareTelegram()"><i class="fab fa-telegram"></i> Telegram</button>
+                    </div>
+                </div>
+                <div class="section-subtitle">Your Referrals</div>
+                <div id="referral-users-list"></div>
+            </div>
+
+            <!-- MAIL SECTION -->
+            <div id="mail-section" class="section">
+                <div class="top-bar">
+                    <i class="fas fa-arrow-left" onclick="navigateTo('home-section')" style="font-size:20px;cursor:pointer;"></i>
+                    <span>Inbox</span>
+                    <span></span>
+                </div>
+                <div id="mails-container"></div>
+            </div>
+
+            <!-- CHAT / USER LIST SECTION -->
+            <div id="chat-section" class="section">
+                <div class="top-bar">
+                    <i class="fas fa-arrow-left" onclick="navigateTo('home-section')" style="font-size:20px;cursor:pointer;"></i>
+                    <span id="chat-title">Users</span>
+                    <span></span>
+                </div>
+                <!-- User List View -->
+                <div id="user-list-view">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-users" placeholder="Search users..." onkeyup="filterUserList()">
+                    </div>
+                    <div id="users-list"></div>
+                </div>
+                <!-- Chat View -->
+                <div id="chat-view" style="display:none;">
+                    <div class="chat-header" id="chat-header">
+                        <i class="fas fa-arrow-left" onclick="closeChat()" style="font-size:18px;cursor:pointer;"></i>
+                        <div class="ch-avatar" id="ch-avatar">?</div>
+                        <div>
+                            <div class="ch-name" id="ch-name">User</div>
+                            <div class="ch-status" id="ch-status">online</div>
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chat-messages"></div>
+                    <div class="chat-input-bar">
+                        <input type="text" id="chat-msg-input" placeholder="Type a message..." onkeypress="if(event.key==='Enter')sendChatMsg()">
+                        <button class="chat-send-btn" onclick="sendChatMsg()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUPPORT SECTION -->
+            <div id="support-section" class="section">
+                <div class="top-bar">
+                    <i class="fas fa-arrow-left" onclick="navigateTo('home-section')" style="font-size:20px;cursor:pointer;"></i>
+                    <span>Support Team</span>
+                    <span></span>
+                </div>
+                <div id="support-content"></div>
+            </div>
+
+            <!-- SETTINGS / PAGES SECTION -->
+            <div id="pages-section" class="section">
+                <div class="top-bar">
+                    <i class="fas fa-arrow-left" onclick="navigateTo('home-section')" style="font-size:20px;cursor:pointer;"></i>
+                    <span id="pages-title">Page</span>
+                    <span></span>
+                </div>
+                <div id="pages-content" style="padding:15px;line-height:1.8;font-size:14px;color:var(--text-muted);"></div>
+            </div>
+
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="bn-item active" onclick="navigateTo('home-section')"><i class="fas fa-home"></i><span>Home</span></div>
+            <div class="bn-item" onclick="navigateTo('lobby-section')"><i class="fas fa-gamepad"></i><span>Games</span></div>
+            <div class="bn-item" onclick="navigateTo('chat-section')"><i class="fas fa-comments"></i><span>Chat</span></div>
+            <div class="bn-item" onclick="navigateTo('wallet-section')"><i class="fas fa-wallet"></i><span>Wallet</span></div>
+            <div class="bn-item" onclick="navigateTo('profile-section')"><i class="fas fa-user"></i><span>Profile</span></div>
+        </div>
+
+        <!-- Menu Overlay -->
+        <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
+        <div class="side-menu" id="side-menu">
+            <div class="sm-item" onclick="navigateTo('home-section');toggleMenu();"><span>🏠</span> Home</div>
+            <div class="sm-item" onclick="navigateTo('wallet-section');toggleMenu();"><span>💰</span> Wallet</div>
+            <div class="sm-item" onclick="navigateTo('profile-section');toggleMenu();"><span>👤</span> Profile</div>
+            <div class="sm-item" onclick="navigateTo('referral-section');toggleMenu();"><span>🔗</span> Referral</div>
+            <div class="sm-item" onclick="navigateTo('mail-section');toggleMenu();"><span>📬</span> Inbox</div>
+            <div class="sm-item" onclick="navigateTo('support-section');toggleMenu();"><span>🎧</span> Support Team</div>
+            <div class="sm-divider"></div>
+            <div class="sm-item" onclick="openPage('privacy');toggleMenu();"><span>🔒</span> Privacy Policy</div>
+            <div class="sm-item" onclick="openPage('terms');toggleMenu();"><span>📜</span> Terms & Conditions</div>
+            <div class="sm-item" onclick="openPage('about');toggleMenu();"><span>ℹ️</span> About Us</div>
+            <div class="sm-item" onclick="openPage('gst');toggleMenu();"><span>🧾</span> GST</div>
+            <div class="sm-item" onclick="openPage('rules');toggleMenu();"><span>📖</span> Game Rules</div>
+            <div class="sm-divider"></div>
+            <div class="sm-item" style="color:var(--danger);" onclick="logoutUser();toggleMenu();"><span>🚪</span> Logout</div>
+        </div>
+
+    </div>
+
+    <!-- ==================== CREATE BET POPUP ==================== -->
+    <div id="create-bet-overlay" class="popup-overlay" onclick="closePopup(event, 'create-bet-overlay')">
+        <div class="popup" onclick="event.stopPropagation()">
+            <div class="popup-header">Create Bet</div>
+            <input type="number" id="bet-amount" placeholder="Enter Amount">
+            <input type="text" id="bet-room" placeholder="Enter Room Code">
+            <button class="btn" onclick="submitBet()">Submit</button>
+            <button class="btn" style="background:var(--text-muted);margin-top:10px;" onclick="closePopup(event, 'create-bet-overlay')">Cancel</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../admin/firebase-config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
