@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0a0b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="LJ Admin">
+    <link rel="manifest" href="manifest.json">
+    <title>Ludo Joy - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+
+    <div id="toast">Message</div>
+
+    <!-- Login -->
+    <div id="login-section">
+        <div class="login-box">
+            <h2><i class="fas fa-dice" style="color:#ff3b30;"></i> Ludo Joy Admin</h2>
+            <input type="email" id="admin-email" placeholder="Admin Email" value="vakki@admin.com">
+            <input type="password" id="admin-pass" placeholder="Password" value="vakkiboss861402">
+            <button class="btn" onclick="handleLogin(this)">
+                <span class="btn-text">Login Securely</span><div class="spinner"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Layout -->
+    <div id="admin-layout" style="display:none;">
+        <div class="mobile-header">
+            <h2><i class="fas fa-dice" style="color:#ff3b30;"></i> Ludo Joy</h2>
+            <i class="fas fa-bars menu-btn" onclick="toggleSidebar()"></i>
+        </div>
+
+        <div class="dashboard-body">
+            <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+            
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-logo"><i class="fas fa-dice" style="color:#ff3b30;"></i> Ludo Joy</div>
+                <div class="nav-item active" onclick="switchTab('dashboard', this)"><i class="fas fa-chart-pie"></i> Dashboard</div>
+                <div class="nav-item" onclick="switchTab('games', this)"><i class="fas fa-gamepad"></i> Games</div>
+                <div class="nav-item" onclick="switchTab('users', this)"><i class="fas fa-users"></i> Users</div>
+                <div class="nav-item" onclick="switchTab('kyc', this)"><i class="fas fa-id-card"></i> KYC</div>
+                <div class="nav-item" onclick="switchTab('bets', this)"><i class="fas fa-coins"></i> Bets</div>
+                <div class="nav-item" onclick="switchTab('transactions', this)"><i class="fas fa-wallet"></i> Transactions</div>
+                <div class="nav-item" onclick="switchTab('referrals', this)"><i class="fas fa-share-alt"></i> Referrals</div>
+                <div class="nav-item" onclick="switchTab('mail', this)"><i class="fas fa-envelope"></i> Mail</div>
+                <div class="nav-item" onclick="switchTab('support', this)"><i class="fas fa-headset"></i> Support</div>
+                <div class="nav-item" onclick="switchTab('settings', this)"><i class="fas fa-cog"></i> Settings</div>
+                <div class="nav-item" style="margin-top:auto; color:var(--danger);" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            </div>
+
+            <div class="main-content">
+
+                <!-- DASHBOARD -->
+                <div id="dashboard" class="section active">
+                    <div class="header"><h1>Overview</h1></div>
+                    <div class="stat-grid">
+                        <div class="stat-card"><h3><i class="fas fa-users" style="color:var(--primary);"></i> Total Users</h3><p id="stat-users">0</p></div>
+                        <div class="stat-card"><h3><i class="fas fa-arrow-down" style="color:var(--success);"></i> Total Deposit</h3><p id="stat-deposit" style="color:var(--success);">₹0</p></div>
+                        <div class="stat-card"><h3><i class="fas fa-arrow-up" style="color:var(--danger);"></i> Total Withdraw</h3><p id="stat-withdraw" style="color:var(--danger);">₹0</p></div>
+                        <div class="stat-card"><h3><i class="fas fa-coins" style="color:var(--warning);"></i> Active Bets</h3><p id="stat-bets" style="color:var(--warning);">0</p></div>
+                        <div class="stat-card"><h3><i class="fas fa-id-card" style="color:var(--danger);"></i> Pending KYC</h3><p id="stat-pending-kyc" style="color:var(--danger);">0</p></div>
+                    </div>
+                    <div class="header"><h1>Recent Bets</h1></div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead><tr><th>Players</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+                            <tbody id="recent-bets-list"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- GAMES -->
+                <div id="games" class="section">
+                    <div class="header"><h1>Manage Games</h1></div>
+                    <div class="form-card">
+                        <input type="text" id="g-name" placeholder="Game Name">
+                        <input type="text" id="g-logo" placeholder="Game Logo URL">
+                        <div style="display:flex; gap:10px;">
+                            <select id="g-status"><option value="active">Active</option><option value="disabled">Disabled</option></select>
+                        </div>
+                        <button class="btn btn-success" onclick="saveGame(this)"><span class="btn-text">Save Game</span><div class="spinner"></div></button>
+                    </div>
+                    <div class="header" style="margin-top:40px;"><h1>All Games</h1></div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead><tr><th>Logo</th><th>Name</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody id="games-list"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- USERS -->
+                <div id="users" class="section">
+                    <div class="header" style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px;">
+                        <h1>User Management</h1>
+                        <input type="text" id="search-users" placeholder="Search by Name or ID..." onkeyup="filterUsers()" style="max-width:250px; margin:0;">
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead><tr><th>User</th><th>ID</th><th>Balance</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody id="user-list"><tr><td colspan="5" style="text-align:center;">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- KYC -->
+                <div id="kyc" class="section">
+                    <div class="header"><h1>KYC Requests</h1></div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead><tr><th>User</th><th>Aadhar Name</th><th>Aadhar Number</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody id="kyc-list"><tr><td colspan="5" style="text-align:center;">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- BETS -->
+                <div id="bets" class="section">
+                    <div class="header"><h1>Bet Monitoring</h1></div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead><tr><th>Creator</th><th>Joiner</th><th>Amount</th><th>Room Code</th><th>Status</th></tr></thead>
+                            <tbody id="bets-list"><tr><td colspan="5" style="text-align:center;">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TRANSACTIONS -->
+                <div id="transactions" class="section">
+                    <div class="header" style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px;">
+                        <h1>Transactions</h1>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <input type="text" id="search-trx" placeholder="Search..." onkeyup="filterTrx()" style="max-width:200px; margin:0;">
+                            <select id="filter-trx-type" onchange="filterTrx()" style="padding:10px; border-radius:10px; border:1px solid #ddd; margin:0; max-width:150px;"><option value="">All Types</option><option value="Deposit">Deposit</option><option value="Withdraw">Withdraw</option></select>
+                            <select id="filter-trx-status" onchange="filterTrx()" style="padding:10px; border-radius:10px; border:1px solid #ddd; margin:0; max-width:150px;"><option value="">All Status</option><option value="Pending">Pending</option><option value="Success">Success</option><option value="Rejected">Rejected</option></select>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead><tr><th>User</th><th>Type</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody id="trx-list"><tr><td colspan="6" style="text-align:center;">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- REFERRALS -->
+                <div id="referrals" class="section">
+                    <div class="header"><h1>Referral Settings</h1></div>
+                    <div class="form-card">
+                        <label style="font-size:12px; font-weight:bold; color:var(--text-muted); margin-bottom:5px; display:block;">Referral Commission (%)</label>
+                        <input type="number" id="r-commission" placeholder="Commission Percentage" value="2">
+                        <button class="btn btn-success" onclick="saveReferralSettings(this)"><span class="btn-text">Update Commission</span><div class="spinner"></div></button>
+                    </div>
+                    <div class="header" style="margin-top:40px;"><h1>Referral Earnings</h1></div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead><tr><th>User</th><th>Referred Users</th><th>Total Commission</th></tr></thead>
+                            <tbody id="referral-list"><tr><td colspan="3" style="text-align:center;">Loading...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- MAIL -->
+                <div id="mail" class="section">
+                    <div class="header"><h1>Send Mail to Users</h1></div>
+                    <div class="form-card">
+                        <input type="text" id="m-subject" placeholder="Subject">
+                        <textarea id="m-body" placeholder="Email Body" rows="6"></textarea>
+                        <select id="m-recipients"><option value="all">All Users</option><option value="single">Single User</option></select>
+                        <input type="text" id="m-user-id" placeholder="User ID (if single)" style="display:none;">
+                        <button class="btn btn-success" onclick="sendMail(this)"><span class="btn-text">Send Mail</span><div class="spinner"></div></button>
+                    </div>
+                    <div class="header" style="margin-top:40px;"><h1>Welcome Message</h1></div>
+                    <div class="form-card">
+                        <textarea id="m-welcome" placeholder="Welcome Message (with emojis)" rows="4"></textarea>
+                        <button class="btn btn-success" onclick="saveWelcomeMsg(this)"><span class="btn-text">Save Welcome Message</span><div class="spinner"></div></button>
+                    </div>
+                </div>
+
+                <!-- SUPPORT -->
+                <div id="support" class="section">
+                    <div class="header"><h1>Support Page Settings</h1></div>
+                    <div class="form-card">
+                        <input type="text" id="s-whatsapp" placeholder="WhatsApp Link">
+                        <input type="text" id="s-telegram" placeholder="Telegram Link">
+                        <input type="text" id="s-chat" placeholder="Chat Link">
+                        <input type="text" id="s-support-logo" placeholder="Support Logo URL">
+                        <button class="btn btn-success" onclick="saveSupport(this)"><span class="btn-text">Save Support Settings</span><div class="spinner"></div></button>
+                    </div>
+                </div>
+
+                <!-- SETTINGS -->
+                <div id="settings" class="section">
+                    <div class="header"><h1>App Settings</h1></div>
+                    <div class="form-card">
+                        <label style="font-size:12px; font-weight:bold; color:var(--text-muted); margin-bottom:5px; display:block;">Deposit Options</label>
+                        <input type="text" id="s-deposit-opts" placeholder="Comma separated: 100,200,300,400,500,1000,2000,5000" value="100,200,300,400,500,1000,2000,5000">
+                        <input type="number" id="s-min-deposit" placeholder="Minimum Deposit" value="100">
+                        <input type="number" id="s-min-withdraw" placeholder="Minimum Withdraw" value="100">
+                        <label style="font-size:12px; font-weight:bold; color:var(--text-muted); margin-bottom:5px; margin-top:15px; display:block;">Privacy Policy, Terms & About</label>
+                        <textarea id="s-privacy" placeholder="Privacy Policy Text" rows="4"></textarea>
+                        <textarea id="s-terms" placeholder="Terms & Conditions Text" rows="4"></textarea>
+                        <textarea id="s-about" placeholder="About Us Text" rows="4"></textarea>
+                        <textarea id="s-rules" placeholder="Game Rules" rows="4"></textarea>
+                        <button class="btn btn-success" onclick="saveAppSettings(this)"><span class="btn-text">Save Settings</span><div class="spinner"></div></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div id="user-detail-modal" class="modal-overlay" onclick="closeModal(event, 'user-detail-modal')">
+        <div class="ud-modal" onclick="event.stopPropagation()">
+            <div class="ud-header">
+                <div class="ud-header-top">
+                    <h2>User Profile</h2>
+                    <i class="fas fa-times ud-close" onclick="forceCloseModal('user-detail-modal')"></i>
+                </div>
+                <div class="ud-user-badge" id="ud-user-badge">
+                    <div class="ud-avatar" id="ud-avatar">?</div>
+                    <div class="ud-user-meta">
+                        <div class="ud-user-name" id="ud-user-name">--</div>
+                        <div class="ud-user-id" id="ud-user-id">ID: --</div>
+                    </div>
+                    <div class="ud-status-badge" id="ud-status-badge">Active</div>
+                </div>
+            </div>
+            <div class="ud-tabs">
+                <div class="ud-tab active" data-tab="profile" onclick="switchUdTab('profile', this)"><i class="fas fa-user"></i> Profile</div>
+                <div class="ud-tab" data-tab="wallet" onclick="switchUdTab('wallet', this)"><i class="fas fa-wallet"></i> Wallet</div>
+                <div class="ud-tab" data-tab="referral" onclick="switchUdTab('referral', this)"><i class="fas fa-share-alt"></i> Referral</div>
+            </div>
+            <div class="ud-body" id="ud-body"></div>
+        </div>
+    </div>
+
+    <!-- Edit Balance Modal -->
+    <div id="edit-balance-modal" class="modal-overlay" onclick="closeModal(event, 'edit-balance-modal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2 style="margin-bottom:15px; font-weight:800;">Edit User Balance</h2>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">User: <strong id="edit-u-name">...</strong></p>
+            <input type="hidden" id="edit-u-id">
+            <input type="number" id="edit-u-bal" placeholder="New Balance">
+            <button class="btn btn-success" style="width:100%;" onclick="saveBalance(this)">
+                <span class="btn-text">Update Balance</span><div class="spinner"></div>
+            </button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../user/env.js"></script>
+    <script src="../user/firebase-config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

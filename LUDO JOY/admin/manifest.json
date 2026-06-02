@@ -1,0 +1,16 @@
+{
+  "name": "Ludo Joy Admin",
+  "short_name": "LJ Admin",
+  "description": "Admin panel for Ludo Joy gaming app",
+  "start_url": "admin.html",
+  "display": "standalone",
+  "background_color": "#1c1c1e",
+  "theme_color": "#0a0a0b",
+  "orientation": "portrait",
+  "scope": "/admin/",
+  "categories": ["games", "business"],
+  "icons": [
+    { "src": "../user/icons/icon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "../user/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }
+  ]
+}
